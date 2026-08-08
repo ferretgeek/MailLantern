@@ -1,0 +1,1 @@
+# Runtime dependencies: none. Mail Lantern uses Python's standard library.

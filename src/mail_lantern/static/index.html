@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="sky">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#edf7ff">
+    <meta name="description" content="信灯是一款本地优先、只读连接 iCloud IMAP 的验证码查找工具。">
+    <title>信灯 · Mail Lantern</title>
+    <link rel="icon" href="/favicon.svg?v=1.0.0" type="image/svg+xml">
+    <link rel="icon" href="/favicon.ico?v=1.0.0" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1.0.0">
+    <link rel="stylesheet" href="/styles.css?v=1.0.0-1">
+    <script src="/app.js?v=1.0.0" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <div class="page-glow page-glow-a" aria-hidden="true"></div>
+    <div class="page-glow page-glow-b" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="信灯首页">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><path d="M17 7h14l3 10-3 4v14l5 3v3H12v-3l5-3V21l-3-4 3-10Z"/><path d="M19 18h10M20 23h8M21 27h6"/></svg>
+        </span>
+        <span><strong>信灯</strong><small>Mail Lantern</small></span>
+      </a>
+
+      <nav class="toolbar" aria-label="界面设置">
+        <button class="icon-button" id="privacy-toggle" type="button" aria-pressed="false" title="隐藏敏感内容">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.8"/></svg>
+          <span class="button-label">隐私遮罩</span>
+        </button>
+        <div class="theme-control">
+          <button class="icon-button" id="theme-trigger" type="button" aria-expanded="false" aria-controls="theme-menu">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c0-1.1-.9-2-2-2h-1.2a2 2 0 0 1-2-2V6.8A3.8 3.8 0 0 0 12 3Z"/><circle cx="7.7" cy="10" r="1"/><circle cx="10" cy="6.8" r="1"/><circle cx="7.8" cy="14" r="1"/></svg>
+            <span class="button-label">主题</span>
+          </button>
+          <div class="theme-menu" id="theme-menu" role="radiogroup" aria-label="选择全局主题" hidden>
+            <button type="button" role="radio" data-theme-choice="sky"><i class="swatch sky"></i><span>晴空</span><small>清澈蓝</small></button>
+            <button type="button" role="radio" data-theme-choice="jade"><i class="swatch jade"></i><span>青玉</span><small>柔和绿</small></button>
+            <button type="button" role="radio" data-theme-choice="sunset"><i class="swatch sunset"></i><span>晚霞</span><small>温暖橙</small></button>
+            <button type="button" role="radio" data-theme-choice="graphite"><i class="swatch graphite"></i><span>深灰</span><small>夜间模式</small></button>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="pulse-dot"></span><span id="mode-label">本地优先 · 只读连接</span></div>
+          <h1 id="hero-title">让验证码亮起来，<br><em>凭据不留下来。</em></h1>
+          <p>只在这一次请求的内存中使用 App 专用密码，从 iCloud 收件箱里捞出最近的验证码，然后轻轻熄灯。</p>
+          <div class="trust-line" aria-label="隐私设计摘要">
+            <span><svg viewBox="0 0 20 20"><path d="m5 10 3 3 7-7"/></svg>固定官方 IMAP</span>
+            <span><svg viewBox="0 0 20 20"><path d="m5 10 3 3 7-7"/></svg>只读收件箱</span>
+            <span><svg viewBox="0 0 20 20"><path d="m5 10 3 3 7-7"/></svg>不保存凭据</span>
+          </div>
+        </div>
+        <div class="lantern-scene" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="mail-chip mail-chip-one"><span>••••••</span></div>
+          <div class="mail-chip mail-chip-two"><span>482917</span></div>
+          <div class="lantern">
+            <div class="lantern-handle"></div>
+            <div class="lantern-cap"></div>
+            <div class="lantern-body"><div class="lantern-light"></div><span>6</span></div>
+            <div class="lantern-foot"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace" aria-labelledby="scan-title">
+        <article class="scan-panel">
+          <header class="panel-heading">
+            <div><span class="section-index">01</span><h2 id="scan-title">点亮信箱</h2></div>
+            <span class="provider-pill"><i></i><span id="provider-label">iCloud Mail</span></span>
+          </header>
+
+          <form id="scan-form" novalidate>
+            <div class="field-grid">
+              <label class="field">
+                <span>Apple 账户邮箱</span>
+                <span class="input-shell">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+                  <input id="account" name="account" type="email" autocomplete="username" inputmode="email" maxlength="320" placeholder="you@example.com" required>
+                </span>
+              </label>
+              <label class="field">
+                <span>App 专用密码</span>
+                <span class="input-shell">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                  <input id="app-password" name="appPassword" type="password" autocomplete="current-password" minlength="12" maxlength="128" placeholder="xxxx-xxxx-xxxx-xxxx" required>
+                  <button class="reveal-button" id="reveal-password" type="button" aria-label="显示密码">显示</button>
+                </span>
+                <small>请使用 Apple 生成的 App 专用密码，不要输入 Apple 登录密码。</small>
+              </label>
+              <label class="field field-wide">
+                <span>目标收件地址 <b>可选</b></span>
+                <span class="input-shell">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
+                  <input id="expected-recipient" name="expectedRecipient" type="email" autocomplete="off" inputmode="email" maxlength="320" placeholder="用于筛选“隐藏邮件地址”等转发别名">
+                </span>
+              </label>
+              <label class="field compact-field">
+                <span>查看最近</span>
+                <select id="latest" name="latest">
+                  <option value="10">10 封邮件</option>
+                  <option value="30" selected>30 封邮件</option>
+                  <option value="50">50 封邮件</option>
+                </select>
+              </label>
+              <label class="field compact-field">
+                <span>时间范围</span>
+                <select id="since-minutes" name="sinceMinutes">
+                  <option value="30">最近 30 分钟</option>
+                  <option value="180" selected>最近 3 小时</option>
+                  <option value="720">最近 12 小时</option>
+                  <option value="1440">最近 24 小时</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.9 8 7 10 4.1-2 7-5.4 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-5"/></svg><span>密码会在扫描结束后立即从页面清空。</span></p>
+              <button class="primary-button" id="scan-button" type="submit"><span>寻找验证码</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg></button>
+            </div>
+          </form>
+        </article>
+
+        <aside class="boundary-card">
+          <span class="section-index">02</span>
+          <h2>边界比功能更重要</h2>
+          <p>信灯只会去一个地方：Apple 公布的 <code>imap.mail.me.com:993</code>。不接触私有 API，也不替你登录或管理 Apple 账户。</p>
+          <dl>
+            <div><dt>连接</dt><dd>TLS 加密</dd></div>
+            <div><dt>权限</dt><dd>INBOX 只读</dd></div>
+            <div><dt>保存</dt><dd>零凭据存储</dd></div>
+          </dl>
+          <a href="https://support.apple.com/102654" target="_blank" rel="noreferrer">如何创建 App 专用密码 <span aria-hidden="true">↗</span></a>
+        </aside>
+      </section>
+
+      <section class="results-section" aria-labelledby="results-title">
+        <header class="results-heading">
+          <div><span class="section-index">03</span><h2 id="results-title">灯下消息</h2></div>
+          <div class="results-meta"><span id="result-count">尚未扫描</span><button id="clear-results" type="button" disabled>清空</button></div>
+        </header>
+        <div id="status" class="status-card empty-state" role="status" aria-live="polite">
+          <span class="empty-lantern" aria-hidden="true"></span>
+          <strong>静候一封来信</strong>
+          <p>输入邮箱与 App 专用密码，最近的验证码会出现在这里。</p>
+        </div>
+        <div id="results" class="result-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="principles" aria-label="设计原则">
+        <article><span>01</span><h3>不留脚印</h3><p>不建账号库、不写凭据文件、不把邮箱内容放进浏览器存储。</p></article>
+        <article><span>02</span><h3>只取所需</h3><p>限制邮件数量、时间范围与响应大小，只返回识别出的验证码。</p></article>
+        <article><span>03</span><h3>由你掌灯</h3><p>本机开箱即用，也可在自己的服务器上通过 HTTPS 私有部署。</p></article>
+      </section>
+    </main>
+
+    <footer><p>信灯 · Mail Lantern</p><span>一盏只照亮必要信息的灯。</span></footer>
+
+    <div class="access-gate" id="access-gate" hidden>
+      <form id="access-form" class="gate-card">
+        <span class="brand-mark gate-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M17 7h14l3 10-3 4v14l5 3v3H12v-3l5-3V21l-3-4 3-10Z"/><path d="M19 18h10M20 23h8M21 27h6"/></svg></span>
+        <p class="eyebrow">本地访问门</p>
+        <h2>先确认是你</h2>
+        <p>输入启动终端显示的临时访问令牌。令牌只保存在当前页面内存中。</p>
+        <label class="field"><span>访问令牌</span><span class="input-shell"><input id="access-token" type="password" autocomplete="off" minlength="24" required placeholder="粘贴临时令牌"></span></label>
+        <p class="gate-error" id="gate-error" role="alert"></p>
+        <button class="primary-button" type="submit"><span>进入信灯</span><svg viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg></button>
+      </form>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

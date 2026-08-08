@@ -1,0 +1,17 @@
+services:
+  mail-lantern:
+    build: .
+    restart: unless-stopped
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      LANTERN_ACCESS_TOKEN: ${LANTERN_ACCESS_TOKEN:?set LANTERN_ACCESS_TOKEN}
+      LANTERN_ALLOWED_HOSTS: "${LANTERN_ALLOWED_HOSTS:-localhost,127.0.0.1}"
+    ports:
+      - "127.0.0.1:8769:8769"
+    tmpfs:
+      - /tmp:size=16m,mode=1777

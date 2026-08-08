@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a reproducible problem using synthetic data only
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Never include real accounts, passwords, verification codes, messages, tokens, server addresses, paths, or private screenshots.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: v1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment
+      options: [Local process, Docker, systemd and reverse proxy, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction with reserved data
+      placeholder: Use example.invalid addresses, synthetic codes, and redact every private value.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
