@@ -4,6 +4,7 @@
 
 - Replace the Python 3.11-only `datetime.UTC` alias with `datetime.timezone.utc`, restoring the documented Python 3.10 compatibility in scanner, demo, and tests.
 - Construct the synthetic app-password fixture without a secret-shaped key/value literal so strict cross-platform secret scans remain deterministic.
+- Rate-limit before body reads and safely drain one bounded oversized authenticated request before returning `413`, avoiding intermittent Windows connection resets without allowing unbounded request consumption.
 
 ## 1.0.0 — 2026-08-09
 

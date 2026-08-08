@@ -165,13 +165,15 @@ class AppTests(unittest.TestCase):
             self.assertEqual(status, 415)
 
     def test_oversize_body_is_rejected(self) -> None:
-        status, _body, _headers = self.request(
-            "/api/scan",
-            method="POST",
-            raw_body=b"x" * (MAX_REQUEST_BYTES + 1),
-            headers={**self.origin_headers(), "Content-Type": "application/json"},
-        )
-        self.assertEqual(status, 413)
+        for _attempt in range(3):
+            status, _body, headers = self.request(
+                "/api/scan",
+                method="POST",
+                raw_body=b"x" * (MAX_REQUEST_BYTES + 1),
+                headers={**self.origin_headers(), "Content-Type": "application/json"},
+            )
+            self.assertEqual(status, 413)
+            self.assertEqual(headers["Connection"], "close")
 
     def test_invalid_json_and_array_are_rejected_case(self) -> None:
         for body in (b"{", b"[]"):

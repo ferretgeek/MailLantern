@@ -5,6 +5,7 @@ import logging
 import mimetypes
 import threading
 from collections.abc import Callable
+from contextlib import suppress
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib.resources import files
@@ -77,6 +78,8 @@ class MailLanternHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(length))
         for name, value in SECURITY_HEADERS.items():
             self.send_header(name, value)
+        if self.close_connection:
+            self.send_header("Connection", "close")
         self.end_headers()
 
     def _bytes(self, status: int, body: bytes, content_type: str) -> None:
@@ -116,7 +119,24 @@ class MailLanternHandler(BaseHTTPRequestHandler):
         except ValueError:
             self._reject(HTTPStatus.BAD_REQUEST, "invalid content length")
             return None
-        if length <= 0 or length > MAX_REQUEST_BYTES:
+        if length <= 0:
+            self._reject(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, "request body must be 1 to 32768 bytes")
+            return None
+        if length > MAX_REQUEST_BYTES:
+            # Authenticated clients may already be transmitting a slightly oversized
+            # body. Drain at most one bounded request with a short deadline, then
+            # close the connection so Windows clients reliably receive the 413.
+            self.close_connection = True
+            previous_timeout = self.connection.gettimeout()
+            with suppress(OSError, TimeoutError):
+                self.connection.settimeout(1.0)
+                remaining = min(length, MAX_REQUEST_BYTES + 1)
+                while remaining:
+                    chunk = self.rfile.read(min(8192, remaining))
+                    if not chunk:
+                        break
+                    remaining -= len(chunk)
+                self.connection.settimeout(previous_timeout)
             self._reject(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, "request body must be 1 to 32768 bytes")
             return None
         body = self.rfile.read(length)
@@ -190,6 +210,9 @@ class MailLanternHandler(BaseHTTPRequestHandler):
         if not self._authorized():
             self._reject(HTTPStatus.UNAUTHORIZED, "access token required")
             return
+        if not self.server.limiter.allow(self._client_key()):
+            self._reject(HTTPStatus.TOO_MANY_REQUESTS, "too many scan requests; try again shortly")
+            return
 
         # Consume one bounded body after the cheap Host/token checks. This keeps the
         # connection reusable even when a later policy check rejects the request.
@@ -202,9 +225,6 @@ class MailLanternHandler(BaseHTTPRequestHandler):
         content_type = self.headers.get("Content-Type", "").partition(";")[0].strip().lower()
         if content_type != "application/json":
             self._reject(HTTPStatus.UNSUPPORTED_MEDIA_TYPE, "application/json required")
-            return
-        if not self.server.limiter.allow(self._client_key()):
-            self._reject(HTTPStatus.TOO_MANY_REQUESTS, "too many scan requests; try again shortly")
             return
         if not self.server.scan_slots.acquire(blocking=False):
             self._reject(HTTPStatus.SERVICE_UNAVAILABLE, "scanner is busy; try again shortly")
