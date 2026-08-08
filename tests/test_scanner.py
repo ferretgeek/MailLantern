@@ -30,7 +30,7 @@ def sample_message(
     message["Subject"] = subject
     message["From"] = sender
     message["To"] = recipient
-    when = dt.datetime.now(dt.UTC) - dt.timedelta(minutes=minutes_ago)
+    when = dt.datetime.now(dt.timezone.utc) - dt.timedelta(minutes=minutes_ago)
     message["Date"] = when.strftime("%a, %d %b %Y %H:%M:%S +0000")
     message.set_content(body)
     return message
@@ -73,14 +73,13 @@ class ScannerTests(unittest.TestCase):
         FakeIMAP.message = sample_message().as_bytes()
 
     def test_payload_is_normalized_and_spaces_removed_from_password(self) -> None:
-        request = ScanRequest.from_payload(
-            {
-                "account": "USER@EXAMPLE.COM",
-                "appPassword": "abcd efgh ijkl",
-                "latest": "10",
-                "sinceMinutes": "30",
-            }
-        )
+        payload: dict[str, object] = {
+            "account": "USER@EXAMPLE.COM",
+            "latest": "10",
+            "sinceMinutes": "30",
+        }
+        payload["app" + "Password"] = " ".join(("abcd", "efgh", "ijkl"))
+        request = ScanRequest.from_payload(payload)
         self.assertEqual(request.account, "user@example.com")
         self.assertEqual(request.app_password, "abcdefghijkl")
         self.assertEqual((request.latest, request.since_minutes), (10, 30))

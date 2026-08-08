@@ -141,10 +141,10 @@ def _received_at(message: Message) -> dt.datetime:
     except (TypeError, ValueError, OverflowError):
         value = None
     if value is None:
-        return dt.datetime.now(dt.UTC)
+        return dt.datetime.now(dt.timezone.utc)
     if value.tzinfo is None:
-        value = value.replace(tzinfo=dt.UTC)
-    return value.astimezone(dt.UTC)
+        value = value.replace(tzinfo=dt.timezone.utc)
+    return value.astimezone(dt.timezone.utc)
 
 
 def _public_message(uid: str, message: Message, expected: str) -> dict[str, object] | None:
@@ -195,7 +195,7 @@ def scan_icloud(request: ScanRequest) -> list[dict[str, object]]:
         if status != "OK" or not data or not isinstance(data[0], bytes):
             raise ScanError("邮箱没有返回可扫描的邮件列表")
         uids = data[0].split()[-request.latest :]
-        cutoff = dt.datetime.now(dt.UTC) - dt.timedelta(minutes=request.since_minutes)
+        cutoff = dt.datetime.now(dt.timezone.utc) - dt.timedelta(minutes=request.since_minutes)
         results: list[dict[str, object]] = []
         for raw_uid in reversed(uids):
             uid = raw_uid.decode("ascii", errors="ignore")
@@ -221,7 +221,7 @@ def scan_icloud(request: ScanRequest) -> list[dict[str, object]]:
 
 
 def demo_messages() -> list[dict[str, object]]:
-    now = dt.datetime.now(dt.UTC)
+    now = dt.datetime.now(dt.timezone.utc)
     return [
         {
             "id": "demo-lantern-01",
