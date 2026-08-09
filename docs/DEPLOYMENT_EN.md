@@ -82,3 +82,19 @@ curl -fsS http://127.0.0.1:8769/health
 ```
 
 Verify that only HTTPS is public, HTTP redirects to HTTPS, the proxy never logs request bodies or Authorization, the Host allowlist is exact, the token is unique and random, the service user is unprivileged, and outbound TCP 993 is available.
+
+## Upgrade, backup, and restore
+
+The application has no mailbox database: iCloud addresses, app-specific passwords, messages, and codes exist only for one bounded request; the browser persists only the theme. There is no business data to back up. Preserve only systemd/Compose, proxy, and secret configuration through encrypted infrastructure tooling, never inside source archives.
+
+Keep the previous source/image, test the candidate on another loopback port, check `/health`, then use demo mode and a dedicated low-risk mailbox before switching. Rollback restores the paired old code/image and configuration. If an access token or iCloud app-specific password was exposed, revoke and regenerate it; restoring files does not undo disclosure.
+
+## Uninstall and troubleshooting
+
+- Stop/disable the unit or run `docker compose down`, then remove the environment/image and secrets.
+- Clearing browser site data removes only the theme; there is no recoverable local mail history.
+- For `401`, re-enter the access token. The page deliberately does not persist it.
+- For Host/Origin rejection, correct the exact allowlist and forwarded Host; keep the validation enabled.
+- For IMAP login failure, verify the iCloud app-specific password, account state, and outbound TCP 993 without logging credentials.
+- For missing codes, verify time range, target mailbox, and selected folders; heuristic extraction still requires human confirmation.
+- Reproduce remote failures through the SSH tunnel first. Never troubleshoot by exposing the bind address or disabling HTTPS/authentication.
