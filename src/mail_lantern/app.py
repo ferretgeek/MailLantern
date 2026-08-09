@@ -29,6 +29,14 @@ CONTENT_TYPES = {
     ".png": "image/png",
     ".svg": "image/svg+xml",
 }
+STATIC_ASSETS = {
+    "/" + path.relative_to(STATIC_ROOT).as_posix(): (
+        path.read_bytes(),
+        CONTENT_TYPES.get(path.suffix.lower()) or mimetypes.guess_type(path.name)[0] or "application/octet-stream",
+    )
+    for path in STATIC_ROOT.rglob("*")
+    if path.is_file()
+}
 SECURITY_HEADERS = {
     "Cache-Control": "no-store",
     "Content-Security-Policy": (
@@ -150,24 +158,21 @@ class MailLanternHandler(BaseHTTPRequestHandler):
             return None
         return value
 
-    def _static_path(self) -> Path | None:
+    def _static_asset(self) -> tuple[bytes, str] | None:
         path = unquote(urlsplit(self.path).path)
         if path in {"", "/"}:
             path = "/index.html"
-        candidate = (STATIC_ROOT / path.lstrip("/")).resolve()
-        try:
-            candidate.relative_to(STATIC_ROOT)
-        except ValueError:
+        if "\x00" in path or any(part in {".", ".."} for part in path.split("/")):
             return None
-        return candidate if candidate.is_file() else None
+        return STATIC_ASSETS.get(path)
 
     def _serve_static(self) -> None:
-        target = self._static_path()
-        if target is None:
+        asset = self._static_asset()
+        if asset is None:
             self._reject(HTTPStatus.NOT_FOUND, "not found")
             return
-        content_type = CONTENT_TYPES.get(target.suffix.lower()) or mimetypes.guess_type(target.name)[0]
-        self._bytes(HTTPStatus.OK, target.read_bytes(), content_type or "application/octet-stream")
+        body, content_type = asset
+        self._bytes(HTTPStatus.OK, body, content_type)
 
     def _bootstrap(self) -> None:
         if not self._authorized():
