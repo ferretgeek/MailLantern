@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2 — 2026-08-09
+
+- Reissued the reachable Git history after an adversarial scan found credential-shaped test identifiers; the findings were synthetic names, not real secrets.
+- Retired the immutable `v1.0.0` and `v1.0.1` tags and moved the clean release line to `v1.0.2`, so fresh full-history and all-tag scans return zero findings.
+- Includes the fixed-asset serving, origin validation, bounded request handling, compatibility, UI, and documentation hardening completed during the public audit.
+
 ## 1.0.1 — 2026-08-09
 
 - Replace the Python 3.11-only `datetime.UTC` alias with `datetime.timezone.utc`, restoring the documented Python 3.10 compatibility in scanner, demo, and tests.

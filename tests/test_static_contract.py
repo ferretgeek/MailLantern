@@ -23,7 +23,7 @@ class StaticContractTests(unittest.TestCase):
 
     def test_favicon_formats_are_linked(self) -> None:
         for path in ("/favicon.svg", "/favicon.ico", "/apple-touch-icon.png"):
-            self.assertIn(f'href="{path}?v=1.0.1"', self.html)
+            self.assertIn(f'href="{path}?v=1.0.2"', self.html)
 
     def test_no_external_runtime_assets(self) -> None:
         self.assertNotIn('<script src="http', self.html)

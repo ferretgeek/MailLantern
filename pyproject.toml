@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mail-lantern"
-version = "1.0.1"
+version = "1.0.2"
 description = "A local-first, read-only iCloud verification-code finder."
 readme = "README_EN.md"
 requires-python = ">=3.10"
