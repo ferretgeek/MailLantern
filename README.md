@@ -12,6 +12,12 @@
 
 让验证码亮起来，凭据不留下来。信灯只读连接 Apple 公布的 iCloud IMAP，从最近邮件中找出验证码；App 专用密码仅在一次请求的内存中使用，结束即清空。
 
+## 界面实景
+
+![信灯合成演示中的验证码结果](./docs/images/dashboard.png)
+
+![信灯入口与隐私边界设计](./docs/images/intro.png)
+
 ## 它刻意只做这些
 
 - 固定连接 `imap.mail.me.com:993`，使用系统 CA 验证 TLS。

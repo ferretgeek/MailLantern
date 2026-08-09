@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Promoted the populated synthetic verification-code results to the profile and social preview, while retaining the full results view and entry composition as complementary README images.
+
 ## 1.0.2 — 2026-08-09
 
 - Reissued the reachable Git history after an adversarial scan found credential-shaped test identifiers; the findings were synthetic names, not real secrets.

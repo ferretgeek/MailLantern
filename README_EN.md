@@ -12,6 +12,12 @@
 
 Bring verification codes into the light, without leaving credentials behind. Mail Lantern reads recent messages through Apple's documented iCloud IMAP endpoint. An app-specific password exists only in memory for one request and is then cleared.
 
+## Interface tour
+
+![Verification-code results in Mail Lantern's synthetic demo](./docs/images/dashboard.png)
+
+![Mail Lantern entry and privacy-boundary design](./docs/images/intro.png)
+
 ## Deliberately narrow
 
 - Connects only to `imap.mail.me.com:993` with system-CA TLS verification.
