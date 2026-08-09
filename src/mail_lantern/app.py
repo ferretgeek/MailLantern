@@ -32,7 +32,9 @@ CONTENT_TYPES = {
 STATIC_ASSETS = {
     "/" + path.relative_to(STATIC_ROOT).as_posix(): (
         path.read_bytes(),
-        CONTENT_TYPES.get(path.suffix.lower()) or mimetypes.guess_type(path.name)[0] or "application/octet-stream",
+        CONTENT_TYPES.get(path.suffix.lower())
+        or mimetypes.guess_type(path.name)[0]
+        or "application/octet-stream",
     )
     for path in STATIC_ROOT.rglob("*")
     if path.is_file()
