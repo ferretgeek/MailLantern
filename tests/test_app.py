@@ -76,7 +76,8 @@ class AppTests(unittest.TestCase):
             with urllib.request.urlopen(request, timeout=3) as response:  # noqa: S310
                 return response.status, response.read(), dict(response.headers)
         except urllib.error.HTTPError as exc:
-            return exc.code, exc.read(), dict(exc.headers)
+            with exc:
+                return exc.code, exc.read(), dict(exc.headers)
 
     def origin_headers(self) -> dict[str, str]:
         return {"Origin": f"http://127.0.0.1:{self.port}", "Sec-Fetch-Site": "same-origin"}
