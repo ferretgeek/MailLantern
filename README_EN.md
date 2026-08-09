@@ -1,4 +1,4 @@
-# Mail Lantern · 信灯
+# Mail Lantern / 信灯 — iCloud Code Finder
 
 [![Release](https://img.shields.io/github/v/release/ferretgeek/MailLantern?display_name=tag&style=flat-square)](https://github.com/ferretgeek/MailLantern/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/ferretgeek/MailLantern/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/ferretgeek/MailLantern/actions/workflows/ci.yml)
