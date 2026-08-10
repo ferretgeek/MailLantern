@@ -67,7 +67,8 @@ class FakeIMAP:
         query = str(args[-1]) if args else ""
         if "RFC822.SIZE" in query:
             size = type(self).reported_size or len(type(self).message)
-            return "OK", [(f"1 (RFC822.SIZE {size} BODY[] {{{len(type(self).message)}}})".encode(), type(self).message)]
+            response = f"1 (RFC822.SIZE {size} BODY[] {{{len(type(self).message)}}})".encode()
+            return "OK", [(response, type(self).message)]
         return "OK", [(b"1 (BODY[] {1})", type(self).message)]
 
     def logout(self) -> None:

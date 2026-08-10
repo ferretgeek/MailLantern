@@ -219,7 +219,9 @@ def scan_icloud(request: ScanRequest) -> list[dict[str, object]]:
             status, metadata = connection.uid(
                 "fetch",
                 raw_uid,
-                "(RFC822.SIZE BODY.PEEK[HEADER.FIELDS (DATE FROM TO CC DELIVERED-TO X-ORIGINAL-TO ENVELOPE-TO SUBJECT CONTENT-TYPE)]<0.65536>)",
+                "(RFC822.SIZE BODY.PEEK[HEADER.FIELDS "
+                "(DATE FROM TO CC DELIVERED-TO X-ORIGINAL-TO ENVELOPE-TO "
+                "SUBJECT CONTENT-TYPE)]<0.65536>)",
             )
             header_bytes = _message_bytes(metadata, limit=MAX_HEADER_BYTES)
             message_size = _message_size(metadata)
@@ -230,9 +232,7 @@ def scan_icloud(request: ScanRequest) -> list[dict[str, object]]:
             header_message = message_from_bytes(header_bytes)
             if _received_at(header_message) < cutoff:
                 continue
-            status, fetched = connection.uid(
-                "fetch", raw_uid, f"(BODY.PEEK[]<0.{MAX_MESSAGE_BYTES}>)"
-            )
+            status, fetched = connection.uid("fetch", raw_uid, f"(BODY.PEEK[]<0.{MAX_MESSAGE_BYTES}>)")
             raw_message = _message_bytes(fetched, limit=MAX_MESSAGE_BYTES)
             if status != "OK" or not raw_message:
                 continue
