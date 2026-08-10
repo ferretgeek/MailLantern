@@ -43,6 +43,8 @@ class FakeIMAP:
     last_port = 0
     readonly = False
     fetch_command: tuple[object, ...] = ()
+    fetch_commands: list[tuple[object, ...]] = []
+    reported_size: int | None = None
 
     def __init__(self, host: str, port: int, **_kwargs: object) -> None:
         type(self).last_host = host
@@ -61,6 +63,11 @@ class FakeIMAP:
         if command == "search":
             return "OK", [b"1"]
         type(self).fetch_command = (command, *args)
+        type(self).fetch_commands.append((command, *args))
+        query = str(args[-1]) if args else ""
+        if "RFC822.SIZE" in query:
+            size = type(self).reported_size or len(type(self).message)
+            return "OK", [(f"1 (RFC822.SIZE {size} BODY[] {{{len(type(self).message)}}})".encode(), type(self).message)]
         return "OK", [(b"1 (BODY[] {1})", type(self).message)]
 
     def logout(self) -> None:
@@ -71,6 +78,8 @@ class ScannerTests(unittest.TestCase):
     def tearDown(self) -> None:
         FakeIMAP.login_error = False
         FakeIMAP.message = sample_message().as_bytes()
+        FakeIMAP.fetch_commands = []
+        FakeIMAP.reported_size = None
 
     def test_payload_is_normalized_and_spaces_removed_from_password(self) -> None:
         payload: dict[str, object] = {
@@ -127,8 +136,22 @@ class ScannerTests(unittest.TestCase):
             results = scan_icloud(request)
         self.assertEqual((FakeIMAP.last_host, FakeIMAP.last_port), (IMAP_HOST, IMAP_PORT))
         self.assertTrue(FakeIMAP.readonly)
-        self.assertIn("BODY.PEEK[]", str(FakeIMAP.fetch_command))
+        self.assertIn("BODY.PEEK[]<0.", str(FakeIMAP.fetch_command))
+        self.assertTrue(any("RFC822.SIZE" in str(command) for command in FakeIMAP.fetch_commands))
         self.assertEqual(len(results), 1)
+
+    def test_oversized_message_is_skipped_before_body_fetch(self) -> None:
+        FakeIMAP.reported_size = 1024 * 1024 + 1
+        request = ScanRequest("user@example.com", "x" * 16, "", 30, 180)
+        with patch("mail_lantern.scanner.imaplib.IMAP4_SSL", FakeIMAP):
+            self.assertEqual(scan_icloud(request), [])
+        self.assertEqual(len(FakeIMAP.fetch_commands), 1)
+
+    def test_long_subject_is_truncated_without_aborting_message(self) -> None:
+        message = sample_message(subject=("A" * 400) + " verification code 482917")
+        item = _public_message("42", message, "alias@example.invalid")
+        self.assertIsNotNone(item)
+        self.assertLessEqual(len(str(item["subject"])), 240)
 
     def test_old_messages_are_not_returned(self) -> None:
         FakeIMAP.message = sample_message(minutes_ago=500).as_bytes()

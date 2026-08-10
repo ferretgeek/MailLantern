@@ -18,5 +18,6 @@ Include the affected version, deployment shape, a minimal reproduction using `.i
 - Prevent proxy request-body and Authorization logging.
 - Run as an unprivileged user and keep Python, the host CA store, and the reverse proxy patched.
 - Treat codes and mailbox identities as sensitive even though the app does not persist them.
+- The scanner checks `RFC822.SIZE`, reads bounded header/body ranges, skips oversized or malformed individual messages, and never places account credentials in a URL even if JavaScript is disabled.
 
 The full data and trust boundary is documented in [`docs/PRIVACY.md`](./docs/PRIVACY.md).

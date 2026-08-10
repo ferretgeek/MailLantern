@@ -20,6 +20,9 @@ IMAP_PORT = 993
 CODE_RE = re.compile(r"(?<!\d)(\d{4,8})(?!\d)")
 TAG_RE = re.compile(r"<[^>]+>")
 SPACE_RE = re.compile(r"\s+")
+SIZE_RE = re.compile(rb"RFC822\.SIZE\s+(\d+)", re.I)
+MAX_HEADER_BYTES = 64 * 1024
+MAX_MESSAGE_BYTES = 1024 * 1024
 KEYWORDS = (
     "verification",
     "verify",
@@ -79,7 +82,11 @@ def _decode_header(value: str | None) -> str:
                     continue
         else:
             chunks.append(part)
-    return clean_text("".join(chunks), limit=240)
+    joined = "".join(chunks)
+    try:
+        return clean_text(joined, limit=240)
+    except ValueError:
+        return clean_text(joined[:240], limit=240)
 
 
 def _message_text(message: Message) -> str:
@@ -173,12 +180,22 @@ def _public_message(uid: str, message: Message, expected: str) -> dict[str, obje
     }
 
 
-def _message_bytes(fetch_data: object) -> bytes | None:
+def _message_bytes(fetch_data: object, *, limit: int) -> bytes | None:
     if not isinstance(fetch_data, list):
         return None
     for item in fetch_data:
         if isinstance(item, tuple) and len(item) >= 2 and isinstance(item[1], bytes):
-            return item[1]
+            return item[1] if len(item[1]) <= limit else None
+    return None
+
+
+def _message_size(fetch_data: object) -> int | None:
+    if not isinstance(fetch_data, list):
+        return None
+    for item in fetch_data:
+        metadata = item[0] if isinstance(item, tuple) and item else item
+        if isinstance(metadata, bytes) and (match := SIZE_RE.search(metadata)):
+            return int(match.group(1))
     return None
 
 
@@ -199,14 +216,31 @@ def scan_icloud(request: ScanRequest) -> list[dict[str, object]]:
         results: list[dict[str, object]] = []
         for raw_uid in reversed(uids):
             uid = raw_uid.decode("ascii", errors="ignore")
-            status, fetched = connection.uid("fetch", raw_uid, "(BODY.PEEK[])")
-            raw_message = _message_bytes(fetched)
+            status, metadata = connection.uid(
+                "fetch",
+                raw_uid,
+                "(RFC822.SIZE BODY.PEEK[HEADER.FIELDS (DATE FROM TO CC DELIVERED-TO X-ORIGINAL-TO ENVELOPE-TO SUBJECT CONTENT-TYPE)]<0.65536>)",
+            )
+            header_bytes = _message_bytes(metadata, limit=MAX_HEADER_BYTES)
+            message_size = _message_size(metadata)
+            if status != "OK" or not header_bytes or message_size is None:
+                continue
+            if message_size <= 0 or message_size > MAX_MESSAGE_BYTES:
+                continue
+            header_message = message_from_bytes(header_bytes)
+            if _received_at(header_message) < cutoff:
+                continue
+            status, fetched = connection.uid(
+                "fetch", raw_uid, f"(BODY.PEEK[]<0.{MAX_MESSAGE_BYTES}>)"
+            )
+            raw_message = _message_bytes(fetched, limit=MAX_MESSAGE_BYTES)
             if status != "OK" or not raw_message:
                 continue
-            message = message_from_bytes(raw_message)
-            if _received_at(message) < cutoff:
+            try:
+                message = message_from_bytes(raw_message)
+                item = _public_message(uid, message, request.expected_recipient)
+            except (TypeError, ValueError, OverflowError, UnicodeError):
                 continue
-            item = _public_message(uid, message, request.expected_recipient)
             if item:
                 results.append(item)
         return results[:20]

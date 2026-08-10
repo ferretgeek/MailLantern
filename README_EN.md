@@ -21,12 +21,13 @@ Bring verification codes into the light, without leaving credentials behind. Mai
 ## Deliberately narrow
 
 - Connects only to `imap.mail.me.com:993` with system-CA TLS verification.
-- Opens `INBOX` read-only and fetches a bounded number of recent messages with `BODY.PEEK[]`.
+- Opens `INBOX` read-only, checks `RFC822.SIZE` and bounded headers first, then fetches at most 1 MiB per recent message with ranged `BODY.PEEK[]`; oversized or malformed messages are skipped individually.
 - Filters by time and optional recipient, then finds likely 4–8 digit verification codes.
 - Returns the code, subject, time, and masked sender/recipient identities.
 - Includes responsive Sky, Jade, Sunset, and `#17191d` Graphite themes plus a privacy mask.
 
 It does not store accounts, passwords, messages, or scan results. Apple login passwords, 2FA, cookies, tokens, private APIs, browser automation, and bulk account operations are out of scope.
+Even with JavaScript disabled, the form uses POST and never places account credentials in a URL.
 
 ## Run locally
 

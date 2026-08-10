@@ -43,6 +43,7 @@ class StaticContractTests(unittest.TestCase):
         self.assertNotIn('sessionStorage.setItem("token"', self.js)
         self.assertNotIn('localStorage.setItem("account"', self.js)
         self.assertNotIn('localStorage.setItem("appPassword"', self.js)
+        self.assertIn('method="post" action="/api/scan"', self.html)
         self.assertIn('localStorage.setItem("mail-lantern-theme"', self.js)
 
     def test_password_is_cleared_after_each_scan_case(self) -> None:

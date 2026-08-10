@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Promoted the populated synthetic verification-code results to the profile and social preview, while retaining the full results view and entry composition as complementary README images.
+- Fetch IMAP size and bounded headers before a capped body range, skip malformed messages per-message, truncate oversized subjects safely, and make the no-JavaScript form fallback POST-only so credentials never enter a URL.
 
 ## 1.0.2 — 2026-08-09
 
