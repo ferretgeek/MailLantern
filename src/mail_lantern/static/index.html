@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <meta name="theme-color" content="#edf7ff">
-    <meta name="description" content="信灯是一款本地优先、只读连接 iCloud IMAP 的验证码查找工具。">
-    <title>信灯 · Mail Lantern</title>
+    <meta name="description" content="本地优先、只读连接 iCloud IMAP 的验证码查找工具。用 App 专用密码，用完即忘。">
+    <title>iCloud 验证码查找</title>
     <link rel="icon" href="/favicon.svg?v=1.0.2" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico?v=1.0.2" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1.0.2">
@@ -19,11 +19,11 @@
     <div class="page-glow page-glow-b" aria-hidden="true"></div>
 
     <header class="topbar">
-      <a class="brand" href="/" aria-label="信灯首页">
+      <a class="brand" href="/" aria-label="iCloud 验证码查找首页">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 48 48"><path d="M17 7h14l3 10-3 4v14l5 3v3H12v-3l5-3V21l-3-4 3-10Z"/><path d="M19 18h10M20 23h8M21 27h6"/></svg>
         </span>
-        <span><strong>信灯</strong><small>Mail Lantern</small></span>
+        <span><strong>iCloud 验证码</strong><small>只读 · 不留痕</small></span>
       </a>
 
       <nav class="toolbar" aria-label="界面设置">
@@ -50,8 +50,8 @@
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
           <div class="eyebrow"><span class="pulse-dot"></span><span id="mode-label">本地优先 · 只读连接</span></div>
-          <h1 id="hero-title">让验证码亮起来，<br><em>凭据不留下来。</em></h1>
-          <p>只在这一次请求的内存中使用 App 专用密码，从 iCloud 收件箱里捞出最近的验证码，然后轻轻熄灯。</p>
+          <h1 id="hero-title">从最近的邮件里，<br><em>直接把验证码捞出来。</em></h1>
+          <p>App 专用密码只在这一次请求的内存里用一次，从 iCloud 收件箱取出最近的验证码，结束即清空。</p>
           <div class="trust-line" aria-label="隐私设计摘要">
             <span><svg viewBox="0 0 20 20"><path d="m5 10 3 3 7-7"/></svg>固定官方 IMAP</span>
             <span><svg viewBox="0 0 20 20"><path d="m5 10 3 3 7-7"/></svg>只读收件箱</span>
@@ -75,7 +75,7 @@
       <section class="workspace" aria-labelledby="scan-title">
         <article class="scan-panel">
           <header class="panel-heading">
-            <div><span class="section-index">01</span><h2 id="scan-title">点亮信箱</h2></div>
+            <div><span class="section-index">01</span><h2 id="scan-title">开始扫描</h2></div>
             <span class="provider-pill"><i></i><span id="provider-label">iCloud Mail</span></span>
           </header>
 
@@ -133,7 +133,7 @@
         <aside class="boundary-card">
           <span class="section-index">02</span>
           <h2>边界比功能更重要</h2>
-          <p>信灯只会去一个地方：Apple 公布的 <code>imap.mail.me.com:993</code>。不接触私有 API，也不替你登录或管理 Apple 账户。</p>
+          <p>它只会去一个地方：Apple 公布的 <code>imap.mail.me.com:993</code>。不接触私有 API，也不替你登录或管理 Apple 账户。</p>
           <dl>
             <div><dt>连接</dt><dd>TLS 加密</dd></div>
             <div><dt>权限</dt><dd>INBOX 只读</dd></div>
@@ -145,7 +145,7 @@
 
       <section class="results-section" aria-labelledby="results-title">
         <header class="results-heading">
-          <div><span class="section-index">03</span><h2 id="results-title">灯下消息</h2></div>
+          <div><span class="section-index">03</span><h2 id="results-title">扫描结果</h2></div>
           <div class="results-meta"><span id="result-count">尚未扫描</span><button id="clear-results" type="button" disabled>清空</button></div>
         </header>
         <div id="status" class="status-card empty-state" role="status" aria-live="polite">
@@ -157,13 +157,13 @@
       </section>
 
       <section class="principles" aria-label="设计原则">
-        <article><span>01</span><h3>不留脚印</h3><p>不建账号库、不写凭据文件、不把邮箱内容放进浏览器存储。</p></article>
-        <article><span>02</span><h3>只取所需</h3><p>限制邮件数量、时间范围与响应大小，只返回识别出的验证码。</p></article>
-        <article><span>03</span><h3>由你掌灯</h3><p>本机开箱即用，也可在自己的服务器上通过 HTTPS 私有部署。</p></article>
+        <article><span>01</span><h3>什么都不留下</h3><p>不建账号库、不写凭据文件、不把邮箱内容放进浏览器存储。</p></article>
+        <article><span>02</span><h3>只读必要的部分</h3><p>限制邮件数量、时间范围与响应大小，只返回识别出的验证码。</p></article>
+        <article><span>03</span><h3>跑在你自己的机器上</h3><p>本机开箱即用，也可在自己的服务器上通过 HTTPS 私有部署。</p></article>
       </section>
     </main>
 
-    <footer><p>信灯 · Mail Lantern</p><span>一盏只照亮必要信息的灯。</span></footer>
+    <footer><p>iCloud 验证码查找</p><span>只读最近邮件，只取验证码。</span></footer>
 
     <div class="access-gate" id="access-gate" hidden>
       <form id="access-form" class="gate-card">
@@ -173,7 +173,7 @@
         <p>输入启动终端显示的临时访问令牌。令牌只保存在当前页面内存中。</p>
         <label class="field"><span>访问令牌</span><span class="input-shell"><input id="access-token" type="password" autocomplete="off" minlength="24" required placeholder="粘贴临时令牌"></span></label>
         <p class="gate-error" id="gate-error" role="alert"></p>
-        <button class="primary-button" type="submit"><span>进入信灯</span><svg viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg></button>
+        <button class="primary-button" type="submit"><span>开始扫描</span><svg viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg></button>
       </form>
     </div>
 

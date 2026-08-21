@@ -21,8 +21,8 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/ferretgeek/MailLantern"
-Issues = "https://github.com/ferretgeek/MailLantern/issues"
+Homepage = "https://github.com/ferretgeek/icloud-code-finder"
+Issues = "https://github.com/ferretgeek/icloud-code-finder/issues"
 
 [project.scripts]
 mail-lantern = "mail_lantern.__main__:main"

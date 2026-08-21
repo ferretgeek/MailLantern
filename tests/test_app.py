@@ -93,7 +93,7 @@ class AppTests(unittest.TestCase):
     def test_static_page_is_public_with_security_headers(self) -> None:
         status, body, headers = self.request("/", auth=False)
         self.assertEqual(status, 200)
-        self.assertIn("信灯".encode(), body)
+        self.assertIn("iCloud 验证码".encode(), body)
         self.assertIn("frame-ancestors 'none'", headers["Content-Security-Policy"])
         self.assertEqual(headers["X-Frame-Options"], "DENY")
         self.assertNotIn("Access-Control-Allow-Origin", headers)
